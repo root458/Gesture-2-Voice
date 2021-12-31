@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'G to V',
+      title: 'G2V',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'SFRegular'

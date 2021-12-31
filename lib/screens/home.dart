@@ -1,11 +1,28 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gesture_to_voice/constants.dart';
 import 'package:gesture_to_voice/screens/components/camera_area.dart';
 import 'package:gesture_to_voice/screens/components/choose_language_sheet.dart';
 import 'package:gesture_to_voice/screens/components/interaction_area.dart';
-// import 'package:gesture_to_voice/services/speak_service.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  // Data
+  List<CameraDescription>? cameras;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeCameras();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +41,15 @@ class Home extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Flexible(
-                  flex: 7,
-                  child: CameraArea(),
-                ),
                 Flexible(
+                  flex: 8,
+                  child: (cameras == null)
+                      ? _returnLoadingWidget()
+                      : CameraArea(cameras: cameras!),
+                ),
+                const Flexible(
                   flex: 2,
-                  child: InteractionArea(
-                    context: context,
-                  ),
+                  child: InteractionArea(),
                 ),
                 Flexible(flex: 3, child: Container()),
               ],
@@ -40,6 +57,23 @@ class Home extends StatelessWidget {
             ChooseLanguage(context: context, languages: languages)
           ],
         ),
+      ),
+    );
+  }
+
+  void initializeCameras() async {
+    await availableCameras().then((value) {
+      cameras = value;
+      setState(() {});
+    });
+  }
+
+  Widget _returnLoadingWidget() {
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: SpinKitThreeBounce(
+        color: kMain,
+        size: 50.0,
       ),
     );
   }
