@@ -2,6 +2,11 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gesture_to_voice/constants.dart';
+import 'package:gesture_to_voice/services/classify.dart';
+import 'package:gesture_to_voice/services/data_service.dart';
+import 'package:gesture_to_voice/services/speak_service.dart';
+import 'package:gesture_to_voice/services/translation_service.dart';
+import 'package:provider/provider.dart';
 
 class CameraArea extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -40,6 +45,15 @@ class _CameraAreaState extends State<CameraArea> {
     // Size
     Size size = MediaQuery.of(context).size;
 
+    // DataService
+    final DataService _dataService = Provider.of<DataService>(context);
+
+    // Classify service
+    final Classify classifier = Classify();
+
+    // TTS service
+    SpeakService _speakService = SpeakService();
+
     if (!_cameraController.value.isInitialized) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
@@ -53,7 +67,7 @@ class _CameraAreaState extends State<CameraArea> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
       child: SizedBox(
-        height: size.height*0.8,
+        height: size.height * 0.8,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -71,7 +85,39 @@ class _CameraAreaState extends State<CameraArea> {
                 color: kWhite,
               ),
               onPressed: () async {
+                // RESULT VALUES
+                late String _gesture;
+                late double _confidence;
+                late String _translation;
+                // This button initiates all actions
+                // 1. Take photo
                 await _takePicture();
+                // 2. Run model on photo, get gesture string
+                await classifier.getGesture(_imageFile).then((value) {
+                  print(value);
+                  setState(() {
+                    _gesture = value![0]['label'];
+                    _confidence = value[0]['confidence'];
+                  });
+                });
+                if (_confidence > 0.6) {
+                  // Do the stuff
+                  // 3. Translate the gesture string to current selected language
+                  await TranslationService.translateMessage(
+                          message: _gesture,
+                          fromLanguageCode: 'en',
+                          tOLanguageCode: 'fr')
+                      .then((value) {
+                    _translation = value;
+                  });
+                  // 4. Update the word on the data service instance
+                  _dataService.setWordsToDisplay(_translation);
+                  // 5. Speak the word in the language
+                  _speakService.speak(words: _translation, langej: 'fr-FR');
+                } else {
+                  // Display not sure/ try again in material banner
+
+                }
               },
               label: const Text('Speak',
                   style: TextStyle(

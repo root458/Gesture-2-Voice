@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gesture_to_voice/services/data_service.dart';
+import 'package:provider/provider.dart';
 
 class InteractionArea extends StatelessWidget {
   
@@ -8,12 +10,15 @@ class InteractionArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    // DataService
+    final DataService _dataService = Provider.of<DataService>(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const [
+      children: [
         Text(
-          'Words to be uttered',
-          style: TextStyle(
+          _dataService.wordsToDisplay,
+          style: const TextStyle(
             overflow: TextOverflow.visible,
             fontFamily: 'SFBold',
             fontSize: 25.0,

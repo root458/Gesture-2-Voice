@@ -1,13 +1,20 @@
 class Language {
   String assetPath;
-  String name;
-  Language({required this.name, required this.assetPath});
+  String translationCode;
+  String ttsCode;
+  List languageName;
+  Language(
+      {required this.translationCode,
+      required this.ttsCode,
+      required this.languageName,
+      required this.assetPath});
 }
 
-List<Language> allLanguages = [
-  // Language(name: name, assetPath: assetPath);
-  // Language(name: name, assetPath: assetPath);
-  // Language(name: name, assetPath: assetPath);
-  // Language(name: name, assetPath: assetPath);
-];
+// Language code for translation and TTS
 
+List<Language> allLanguages = [
+  // Language(translationCode: translationCode, assetPath: assetPath);
+  // Language(translationCode: translationCode, assetPath: assetPath);
+  // Language(translationCode: translationCode, assetPath: assetPath);
+  // Language(translationCode: translationCode, assetPath: assetPath);
+];

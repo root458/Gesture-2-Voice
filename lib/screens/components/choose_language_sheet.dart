@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_to_voice/constants.dart';
+import 'package:gesture_to_voice/services/data_service.dart';
+import 'package:provider/provider.dart';
 
 class ChooseLanguage extends StatelessWidget {
   const ChooseLanguage(
@@ -11,8 +13,9 @@ class ChooseLanguage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // DataService
+    final DataService _dataService = Provider.of<DataService>(context);
 
-    
     return DraggableScrollableSheet(
       initialChildSize: 0.2,
       minChildSize: 0.2,
@@ -33,7 +36,7 @@ class ChooseLanguage extends StatelessWidget {
                     text = languages[index - 1];
                   }
 
-                  return _returnTextTile(text);
+                  return _returnTextTile(text, _dataService);
                 }),
           ),
         );
@@ -42,7 +45,7 @@ class ChooseLanguage extends StatelessWidget {
   }
 }
 
-Widget _returnTextTile(String text) {
+Widget _returnTextTile(String text, DataService dataService) {
   if (text == 'Choose Language') {
     return ListTile(
       title: Text(
@@ -53,10 +56,10 @@ Widget _returnTextTile(String text) {
     );
   } else {
     return ListTile(
+        onTap: () {
+          
+        },
         title: Text(text,
-            style: const TextStyle(
-              fontFamily: 'SFBold',
-              fontSize: 20.0
-            )));
+            style: const TextStyle(fontFamily: 'SFBold', fontSize: 20.0)));
   }
 }
