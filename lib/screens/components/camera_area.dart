@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 
 class CameraArea extends StatefulWidget {
   final List<CameraDescription> cameras;
-  const CameraArea({Key? key, required this.cameras}) : super(key: key);
+  final BuildContext contextOne;
+  const CameraArea({Key? key, required this.cameras, required this.contextOne})
+      : super(key: key);
 
   @override
   State<CameraArea> createState() => _CameraAreaState();
@@ -72,7 +74,7 @@ class _CameraAreaState extends State<CameraArea> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: size.height * 0.5,
+              height: size.height * 0.46,
               width: size.width * 0.96,
               decoration: const BoxDecoration(
                   color: kMain,
@@ -94,33 +96,35 @@ class _CameraAreaState extends State<CameraArea> {
                 await _takePicture();
                 // 2. Run model on photo, get gesture string
                 await classifier.getGesture(_imageFile).then((value) {
-                  print(value);
                   setState(() {
                     _gesture = value![0]['label'];
                     _confidence = value[0]['confidence'];
                   });
                 });
-                if (_confidence > 0.6) {
+                if (_confidence > 0.85) {
                   // Do the stuff
                   // 3. Translate the gesture string to current selected language
                   await TranslationService.translateMessage(
                           message: _gesture,
                           fromLanguageCode: 'en',
-                          tOLanguageCode: 'fr')
+                          tOLanguageCode:
+                              _dataService.currentLanguage.translationCode)
                       .then((value) {
                     _translation = value;
                   });
                   // 4. Update the word on the data service instance
                   _dataService.setWordsToDisplay(_translation);
                   // 5. Speak the word in the language
-                  _speakService.speak(words: _translation, langej: 'fr-FR');
+                  _speakService.speak(
+                      words: _translation,
+                      langej: _dataService.currentLanguage.ttsCode);
                 } else {
                   // Display not sure/ try again in material banner
-
+                  showBanner(widget.contextOne, _dataService);
                 }
               },
-              label: const Text('Speak',
-                  style: TextStyle(
+              label: Text(_dataService.speak,
+                  style: const TextStyle(
                     fontFamily: 'SFBold',
                     fontSize: 20,
                   )),
@@ -136,6 +140,27 @@ class _CameraAreaState extends State<CameraArea> {
         ),
       ),
     );
+  }
+
+  showBanner(BuildContext contextOne, DataService dataService) {
+    ScaffoldMessenger.of(contextOne).showMaterialBanner(MaterialBanner(
+      content: Text(
+        dataService.tryAgain,
+        style: const TextStyle(color: kWhite),
+      ),
+      leading: const Icon(
+        Icons.info,
+        color: kWhite,
+      ),
+      backgroundColor: kAccent,
+      actions: [
+        TextButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            },
+            child: const Icon(Icons.thumb_up, color: kWhite,)),
+      ],
+    ));
   }
 
   _takePicture() async {

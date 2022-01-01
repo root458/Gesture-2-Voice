@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_to_voice/constants.dart';
+import 'package:gesture_to_voice/screens/components/languages.dart';
 import 'package:gesture_to_voice/services/data_service.dart';
 import 'package:provider/provider.dart';
 
 class ChooseLanguage extends StatelessWidget {
-  const ChooseLanguage(
-      {Key? key, required this.context, required this.languages})
-      : super(key: key);
+  const ChooseLanguage({Key? key, required this.context}) : super(key: key);
 
   final BuildContext context;
-  final List languages;
 
   @override
   Widget build(BuildContext context) {
@@ -26,40 +24,57 @@ class ChooseLanguage extends StatelessWidget {
           child: Container(
             color: kWhite,
             child: ListView.builder(
-                itemCount: languages.length + 1,
+                itemCount: allLanguages.length + 1,
                 controller: scrollController,
                 itemBuilder: (context, index) {
-                  String text;
+                  Language language;
                   if (index == 0) {
-                    text = 'Choose Language';
+                    language = Language(
+                        translationCode: '',
+                        ttsCode: '',
+                        languageName: 'Choose Language',
+                        assetPath: '');
                   } else {
-                    text = languages[index - 1];
+                    language = allLanguages[index - 1];
                   }
 
-                  return _returnTextTile(text, _dataService);
+                  return _returnTextTile(language, _dataService);
                 }),
           ),
         );
       },
     );
   }
-}
 
-Widget _returnTextTile(String text, DataService dataService) {
-  if (text == 'Choose Language') {
-    return ListTile(
-      title: Text(
-        text,
-        style:
-            const TextStyle(fontFamily: 'SFBold', fontSize: 25.0, color: kMain),
-      ),
-    );
-  } else {
-    return ListTile(
-        onTap: () {
-          
-        },
-        title: Text(text,
-            style: const TextStyle(fontFamily: 'SFBold', fontSize: 20.0)));
+  Widget _returnTextTile(Language language, DataService dataService) {
+    if (language.languageName == 'Choose Language') {
+      return ListTile(
+        title: Text(
+          dataService.chooseLanguage,
+          style: const TextStyle(
+              fontFamily: 'SFBold', fontSize: 25.0, color: kMain),
+        ),
+      );
+    } else {
+      return ListTile(
+          trailing:
+              dataService.currentLanguage.languageName == language.languageName
+                  ? const Icon(
+                      Icons.check_circle_sharp,
+                      color: kMain,
+                    )
+                  : const Icon(
+                      Icons.check_circle_sharp,
+                      color: kWhite,
+                    ),
+          leading: CircleAvatar(
+            backgroundImage: AssetImage(language.assetPath),
+          ),
+          onTap: () {
+            dataService.setLanguage(language);
+          },
+          title: Text(language.languageName,
+              style: const TextStyle(fontFamily: 'SFBold', fontSize: 20.0)));
+    }
   }
 }
