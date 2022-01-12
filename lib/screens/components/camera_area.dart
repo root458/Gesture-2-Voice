@@ -101,7 +101,7 @@ class _CameraAreaState extends State<CameraArea> {
                     _confidence = value[0]['confidence'];
                   });
                 });
-                if (_confidence > 0.85) {
+                if (_confidence > 0.65) {
                   // Do the stuff
                   // 3. Translate the gesture string to current selected language
                   await TranslationService.translateMessage(

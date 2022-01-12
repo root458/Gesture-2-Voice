@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.suis.gesturetovoice.gesture_to_voice">
    <application
-        android:label="gesture_to_voice"
+        android:label="Gesture 2 Voice"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
