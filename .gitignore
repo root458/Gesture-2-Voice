@@ -2687,3 +2687,6 @@ build/tflite/intermediates/symbol_list_with_package_name/release/package-aware-r
 build/tflite/outputs/aar/tflite-release.aar
 build/tflite/outputs/logs/manifest-merger-release-report.txt
 build/tflite/tmp/compileReleaseJavaWithJavac/source-classes-mapping.txt
+
+# FVM Version Cache
+.fvm/

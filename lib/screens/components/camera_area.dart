@@ -129,11 +129,11 @@ class _CameraAreaState extends State<CameraArea> {
                     fontSize: 20,
                   )),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(kMain),
-                elevation: MaterialStateProperty.all<double>(5),
-                shadowColor: MaterialStateProperty.all<Color>(kMain),
+                backgroundColor: WidgetStateProperty.all<Color>(kMain),
+                elevation: WidgetStateProperty.all<double>(5),
+                shadowColor: WidgetStateProperty.all<Color>(kMain),
                 fixedSize:
-                    MaterialStateProperty.all<Size>(Size(0.7 * size.width, 50)),
+                    WidgetStateProperty.all<Size>(Size(0.7 * size.width, 50)),
               ),
             ),
           ],
@@ -158,7 +158,10 @@ class _CameraAreaState extends State<CameraArea> {
             onPressed: () {
               ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
             },
-            child: const Icon(Icons.thumb_up, color: kWhite,)),
+            child: const Icon(
+              Icons.thumb_up,
+              color: kWhite,
+            )),
       ],
     ));
   }
